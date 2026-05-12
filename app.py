@@ -1212,19 +1212,27 @@ st.markdown(f"""
 
 # Reference diagram for drawing
 st.markdown("#### 📊 Your Measurement Summary for Drawing Reference")
+draw_notes = {
+    "shoulder_abduction" : "Draw shoulder arc at this angle",
+    "shoulder_flexion"   : "Draw shoulder arc at this angle",
+    "shoulder_int_rot"   : "Label internal rotation zone",
+    "shoulder_ext_rot"   : "Label external rotation zone",
+    "elbow_flexion"      : "Draw forearm at this angle",
+    "forearm_supination" : "Show palm-up (supination) range",
+    "forearm_pronation"  : "Show palm-down (pronation) range",
+    "wrist_flexion"      : "Label wrist bend inward",
+    "wrist_extension"    : "Label wrist bend backward",
+    "grip_closure"       : "Fill hand grip bar to this %",
+    "finger_flexion"     : "Show finger curl angle",
+    "arm_flexion"        : "Draw full arm curl arc",
+    "arm_extension"      : "Label arm hyperextension zone",
+}
 draw_ref = pd.DataFrame({
-    "Joint / Axis"   : [LABELS[k] for k in all_vals],
+    "Joint / Axis"    : [LABELS[k] for k in all_vals],
     "Your Measurement": [f"{all_vals[k]} {UNITS[k]}" for k in all_vals],
-    "Control Signal" : [f"{normalise_to_machine(all_vals[k],OPT[k][0],OPT[k][1])} {UNITS[k]}" for k in all_vals],
-    "Synergy %"      : [all_scores[k] for k in all_vals],
-    "Draw Note"      : [
-        "Draw arc at this angle","Draw arc at this angle",
-        "Label rotation zone","Label rotation zone",
-        "Draw forearm at this angle","Show palm-up range",
-        "Show palm-down range","Label wrist bend",
-        "Label wrist bend","Fill hand grip bar to this %",
-        "Show finger curl angle",
-    ]
+    "Control Signal"  : [f"{normalise_to_machine(all_vals[k],OPT[k][0],OPT[k][1])} {UNITS[k]}" for k in all_vals],
+    "Synergy %"       : [all_scores[k] for k in all_vals],
+    "Draw Note"       : [draw_notes.get(k, "Label this joint") for k in all_vals],
 })
 st.dataframe(draw_ref,use_container_width=True,hide_index=True)
 
