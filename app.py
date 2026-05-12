@@ -106,6 +106,7 @@ LABELS = {
     "elbow_flexion":"Elbow Flexion","forearm_supination":"Forearm Supination",
     "forearm_pronation":"Forearm Pronation","wrist_flexion":"Wrist Flexion",
     "wrist_extension":"Wrist Extension","grip_closure":"Grip Closure","finger_flexion":"Finger Flexion",
+    "arm_flexion":"Arm Flexion","arm_extension":"Arm Extension",
 }
 UNITS = {k: "%" if k == "grip_closure" else "°" for k in OPT}
 
