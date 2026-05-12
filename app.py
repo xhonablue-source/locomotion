@@ -184,6 +184,12 @@ def score_color(s):
 def score_bg(s):
     return "#f0fdf4" if s>=80 else "#fffbeb" if s>=55 else "#fff1f2"
 
+def hex_to_rgba(hex_color, alpha=0.2):
+    h = hex_color.lstrip("#")
+    r,g,b = int(h[0:2],16),int(h[2:4],16),int(h[4:6],16)
+    return f"rgba({r},{g},{b},{alpha})"
+
+
 def simulate_sensor(base,hmax,n=120,noise=2.5,drift=0.04):
     t=np.linspace(0,6,n)
     sig=(base+noise*np.sin(2*np.pi*0.4*t)+np.random.normal(0,noise*0.35,n)-drift*base*t/6)
@@ -381,7 +387,7 @@ def arc_chart(human,optimal,human_max,label,unit):
     col=score_color(synergy_score(human,optimal,human_max))
     xh,yh=to_xy(angles*human,r=0.78)
     fig.add_trace(go.Scatter(x=np.concatenate([[0],xh,[0]]),y=np.concatenate([[0],yh,[0]]),
-        fill='toself',fillcolor=col+'33',line=dict(color=col,width=2.5),
+        fill='toself',fillcolor=hex_to_rgba(col,0.2),line=dict(color=col,width=2.5),
         name=f"Measured ({human}{unit})"))
     fig.update_layout(
         title=dict(text=label,font=dict(family='DM Sans',size=11,color='#374151')),
