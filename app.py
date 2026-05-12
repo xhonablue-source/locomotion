@@ -536,41 +536,138 @@ with st.sidebar:
 # TITLE & INTRO
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 st.title("🦾 Human Locomotion Profiler")
+
+# ── LESSON HOOK ──────────────────────────────────────────────
 st.markdown("""
-Welcome to the **Locomotion Profiler**!
+### 🎬 Imagine This...
+You step into a robotic suit. It weighs 80 pounds of titanium and steel.
+Every time **you** move your arm, the robot moves its arm.
+Every time **you** close your fist, the robot closes its hand.
 
-This lesson connects your body's natural movement to the mathematical functions that
-drive a robotic suit — so the machine moves *with* you, not against you.
+But here's the problem — **your body and the machine speak different languages.**
 
----
-### 📘 Classic Explanation:
-A **locomotion function** maps a physical movement (input: degrees or %)
-to a machine control signal (output: normalised value 0→optimal).
+Your arm moves in *degrees*. The robot understands *electrical signals*.
 
-Think of it like a volume knob: how far you can turn it (your range) determines
-how much signal the speaker (robot joint) receives.
-
----
-### 🎯 Objectives:
-- Measure your max range of motion across 3 joint groups
-- Understand how locomotion functions map human motion to machine commands
-- Interpret synergy scores and sensor deviation graphs
-- Generate your personalised robot calibration profile
-- Imagine and describe your custom robotic suit using the math
+**Math is the translator.** That's what this lesson is about.
 """)
 
-st.info("📚 **Standards:** NGSS HS-PS2 · Michigan Merit Curriculum · "
-        "HSA.F.IF.1 · HSA.F.BF.1 · CSTA 3A-AP-17")
+st.info("📚 **8th Grade Standards:** NGSS MS-PS2 · Michigan Merit Curriculum · "
+        "8.F.A.1 Functions · 8.EE.B.5 Proportional Relationships · CSTA 2-AP-14")
 
-standard = st.selectbox("📋 Select learning standard focus:", [
-    "NGSS HS-PS2-1 — Analyse data to support Newton's laws",
-    "NGSS HS-PS2-3 — Apply scientific principles to design a motor system",
-    "HSA.F.IF.1 — Each input maps to exactly one output",
-    "HSA.F.IF.4 — Interpret key features of graphs in terms of physical quantities",
-    "HSA.F.BF.1 — Write a function describing a relationship between two quantities",
-    "HSA.F.LE.1 — Distinguish linear, exponential and other function models",
-    "CSTA 3A-AP-17 — Decompose problems into components using functions/procedures",
+standard = st.selectbox("📋 Select your standard focus:", [
+    "8.F.A.1 — Understand that a function assigns exactly one output to each input",
+    "8.F.A.2 — Compare properties of two functions (tables, graphs, equations)",
+    "8.F.B.4 — Construct a function to model a linear relationship",
+    "8.EE.B.5 — Graph proportional relationships, interpret unit rate as slope",
+    "NGSS MS-PS2-2 — Apply Newton's Third Law to design a solution",
+    "CSTA 2-AP-14 — Use functions to organise code and make it reusable",
 ])
+
+st.markdown("---")
+
+# ── VOCABULARY ────────────────────────────────────────────────
+st.header("📖 Vocabulary — Know These First")
+v1,v2,v3 = st.columns(3)
+with v1:
+    st.markdown("""
+    **🔵 Function**
+    A rule that turns an INPUT into exactly one OUTPUT.
+    > Press a button on a vending machine (input) → get one snack (output).
+    No button gives you two random snacks. That's a function.
+
+    **🔵 Input**
+    The value you put IN.
+    In this app: the degrees you can move your arm.
+    """)
+with v2:
+    st.markdown("""
+    **🟠 Output**
+    The value that comes OUT.
+    In this app: the signal sent to the robot joint.
+
+    **🟠 Range of Motion**
+    How far a joint can move, measured in degrees (°).
+    A full circle = 360°. Your elbow bends about 145°.
+    """)
+with v3:
+    st.markdown("""
+    **🟢 Synergy Score**
+    How closely YOUR motion matches what the MACHINE needs.
+    100% = perfect match. Below 55% = the robot needs help.
+
+    **🟢 Control Signal**
+    The number sent to the robot motor.
+    It's calculated by a function using YOUR body measurements.
+    """)
+
+st.markdown("---")
+
+# ── CLASSIC EXPLANATION ───────────────────────────────────────
+st.header("📘 The Big Idea — What Is a Locomotion Function?")
+st.markdown("""
+A **locomotion function** does one job:
+
+> **It takes how far YOU can move a body part (input)**
+> **and turns it into a command for the robot (output).**
+
+Here's the formula — it's simpler than it looks:
+
+```
+f(θ) = (your measurement ÷ your maximum) × machine optimal
+```
+
+**Example with real numbers:**
+- You can raise your arm out to the side **120°** (that's your measurement)
+- A human shoulder can go up to **180°** maximum
+- The robot shoulder works best at **90°**
+
+```
+f(120) = (120 ÷ 180) × 90
+f(120) = 0.667 × 90
+f(120) = 60°  ← this signal goes to the robot
+```
+
+The robot gets **60°** of movement command. Not too much. Not too little.
+That's your math keeping the machine safe and smooth.
+""")
+
+with st.expander("🤔 Why not just send the robot your exact measurement?"):
+    st.markdown("""
+    Great question! Because **humans and robots have different limits.**
+
+    If your arm goes to 120° but the robot's optimal is only 90°,
+    sending 120° could:
+    - Overstress the robot joint
+    - Make the movement jerky and unsafe
+    - Damage the actuator (the robot muscle)
+
+    The function **scales** your movement to fit the machine perfectly.
+    This is called **normalisation** — and it's used in robotics, music production,
+    video game controllers, and medical devices every day.
+    """)
+
+with st.expander("📐 What does ° (degrees) actually mean?"):
+    st.markdown("""
+    Degrees measure how far something rotates.
+    - 0° = no movement (arm straight down)
+    - 90° = a right angle (arm straight out to the side)
+    - 180° = arm straight up above your head
+
+    When we say your shoulder abduction is **120°**, we mean you can raise
+    your arm 120 degrees away from your body — two thirds of the way to straight up.
+    """)
+
+st.markdown("---")
+
+# ── OBJECTIVES ────────────────────────────────────────────────
+st.subheader("🎯 By the End of This Lesson You Will:")
+st.markdown("""
+- ✅ Explain what a locomotion function does in your own words
+- ✅ Measure your body's range of motion across 3 joint groups
+- ✅ Calculate control signals using the normalisation formula
+- ✅ Read synergy scores and explain what they mean for the robot
+- ✅ Design and describe your personalised robotic suit using your math
+""")
 st.markdown("---")
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -582,15 +679,19 @@ df_match=pd.DataFrame({
     "Movement":list(LABELS.values()),
     "Function f(θ)":["f(θ)=θ/180×90","f(θ)=θ/180×90","f(θ)=θ/90×60","f(θ)=θ/90×60",
                      "f(θ)=θ/145×90","f(θ)=θ/90×75","f(θ)=θ/90×75",
-                     "f(θ)=θ/80×50","f(θ)=θ/70×45","f(p)=p/100×80","f(θ)=θ/90×70"],
-    "Human Max":["180°","180°","90°","90°","145°","90°","90°","80°","70°","100%","90°"],
-    "Machine Optimal":["90°","90°","60°","60°","90°","75°","75°","50°","45°","80%","70°"],
-    "Joint Group":["Shoulder"]*4+["Bicep/Forearm"]*5+["Fist/Grip"]*2,
+                     "f(θ)=θ/80×50","f(θ)=θ/70×45","f(p)=p/100×80","f(θ)=θ/90×70",
+                     "f(θ)=θ/145×90","f(θ)=θ/30×15"],
+    "Human Max":["180°","180°","90°","90°","145°","90°","90°","80°","70°","100%","90°",
+                 "145°","30°"],
+    "Machine Optimal":["90°","90°","60°","60°","90°","75°","75°","50°","45°","80%","70°",
+                       "90°","15°"],
+    "Joint Group":["Shoulder"]*4+["Bicep/Forearm"]*5+["Fist/Grip"]*2+["Bicep/Forearm"]*2,
     "Real-World Action":[
         "🙋 Raise arm laterally","🤚 Raise arm forward","🔄 Rotate arm inward",
         "↩️ Rotate arm outward","💪 Curl forearm up","🤲 Palm up (holding bowl)",
         "🔩 Palm down (turning screwdriver)","🙏 Bend wrist inward",
         "🖐️ Bend wrist backward","✊ Close fist","🤜 Curl fingers at knuckle",
+        "🦾 Full arm curl toward shoulder","↔️ Arm opens past straight",
     ]
 })
 st.dataframe(df_match,use_container_width=True,hide_index=True)
@@ -599,30 +700,68 @@ st.markdown("---")
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 # FUNCTION TYPE DESCRIPTIONS
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-st.header("📊 Understanding Locomotion Function Types")
+st.header("📊 The 4 Math Functions Powering Your Robot")
+st.markdown("Each of these functions does a specific job. Together they let a robot suit respond to YOUR body.")
+
 col1,col2=st.columns(2)
 with col1:
-    st.markdown("### 📐 Normalisation Functions")
-    st.markdown("**Concept:** *Scale human range to machine signal*")
-    st.markdown("- Linear: output increases steadily with input\n"
-                "- **Form:** f(θ) = (θ / human_max) × machine_optimal\n"
-                "- **Example:** Every shoulder degree adds the same signal")
-    st.markdown("### 🎯 Synergy Functions")
-    st.markdown("**Concept:** *How well human matches machine*")
-    st.markdown("- Peaks at 100% when perfectly aligned\n"
-                "- Penalises both under-reach AND over-extension\n"
-                "- **Form:** f = max(0, 1 − |norm_h − norm_opt|) × 100")
+    st.markdown("""
+    ### 📐 1. Normalisation Function
+    **Plain English:** *Translate your degrees into robot language*
+
+    Your body max and the robot's optimal are different numbers.
+    This function scales them to match.
+
+    | You measure | Formula | Robot receives |
+    |---|---|---|
+    | 120° shoulder | (120÷180)×90 | **60°** |
+    | 100° elbow | (100÷145)×90 | **62°** |
+    | 75% grip | (75÷100)×80 | **60%** |
+
+    **f(θ) = (your measurement ÷ your max) × machine optimal**
+    """)
+
+    st.markdown("""
+    ### 🎯 2. Synergy Function
+    **Plain English:** *How well does your body match the machine?*
+
+    100% = perfect — you and the robot move as one.
+    Below 55% = the robot is struggling to follow you.
+
+    - ✅ 80–100% = Optimal
+    - ⚠️ 55–79% = Acceptable
+    - 🔴 0–54% = Needs work
+
+    **Score = (1 − gap between you and optimal) × 100**
+    """)
 with col2:
-    st.markdown("### 📡 Sensor Deviation Functions")
-    st.markdown("**Concept:** *Accuracy of human motion vs machine setpoint*")
-    st.markdown("- RMSE = average distance from optimal target\n"
-                "- Lag = time delay between human and machine\n"
-                "- **Form:** RMSE = √( Σ(sensor_i − optimal)² / n )")
-    st.markdown("### ⚙️ Calibration Functions")
-    st.markdown("**Concept:** *Biology → robot command*")
-    st.markdown("- Converts unique student range to control scalar\n"
-                "- One function per joint, all run synergically\n"
-                "- **Form:** signal = (measured / human_max) × machine_optimal")
+    st.markdown("""
+    ### 📡 3. Sensor Function
+    **Plain English:** *How smooth and accurate is the signal?*
+
+    Sensors on your body read movement 24 times per second.
+    We measure how far off those readings are from perfect.
+
+    - **RMSE** = average error per reading (lower = smoother)
+    - **Lag** = how many seconds behind the robot is
+
+    Think of it like ping in a video game — lower is better.
+
+    **RMSE = √( average of all the errors squared )**
+    """)
+
+    st.markdown("""
+    ### ⚙️ 4. Calibration Function
+    **Plain English:** *Set the robot to fit YOUR body*
+
+    Every student is different. A 5'2" student and a 6'4" student
+    need completely different robot settings.
+
+    Calibration runs all 3 functions above for all 13 joints
+    and saves a personal profile for your suit.
+
+    **One function per joint × 13 joints = your full robot profile**
+    """)
 st.markdown("---")
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -694,10 +833,10 @@ with gc2:
     st.markdown("#### 📐 Your Shoulder Arc Diagram")
     st.markdown("Set your sliders below — the diagram updates live.")
     c1,c2,c3,c4=st.columns(4)
-    with c1: sh_abd  = st.slider("Abduction (°)",        0,180,120,key="sh_abd")
-    with c2: sh_flex = st.slider("Flexion (°)",           0,180,110,key="sh_flex")
-    with c3: sh_ir   = st.slider("Internal Rotation (°)", 0, 90, 55,key="sh_ir")
-    with c4: sh_er   = st.slider("External Rotation (°)", 0, 90, 50,key="sh_er")
+    with c1: sh_abd  = st.number_input("Abduction (°)",        min_value=0, max_value=180, value=120, step=1, key="sh_abd")
+    with c2: sh_flex = st.number_input("Flexion (°)",           min_value=0, max_value=180, value=110, step=1, key="sh_flex")
+    with c3: sh_ir   = st.number_input("Internal Rotation (°)", min_value=0, max_value=90,  value=55,  step=1, key="sh_ir")
+    with c4: sh_er   = st.number_input("External Rotation (°)", min_value=0, max_value=90,  value=50,  step=1, key="sh_er")
     st.pyplot(shoulder_diagram(sh_abd,sh_flex,sh_ir,sh_er))
 
 sh_vals={"shoulder_abduction":sh_abd,"shoulder_flexion":sh_flex,
@@ -742,18 +881,18 @@ with gc1:
 with gc2:
     st.markdown("#### 💪 Your Arm Motion Diagram")
     c1,c2,c3,c4,c5=st.columns(5)
-    with c1: el_flex=st.slider("Elbow Flexion (°)",      0,145,100,key="el_flex")
-    with c2: f_sup  =st.slider("Forearm Supination (°)", 0, 90, 70,key="f_sup")
-    with c3: f_pro  =st.slider("Forearm Pronation (°)",  0, 90, 65,key="f_pro")
-    with c4: w_flex =st.slider("Wrist Flexion (°)",      0, 80, 55,key="w_flex")
-    with c5: w_ext  =st.slider("Wrist Extension (°)",    0, 70, 45,key="w_ext")
+    with c1: el_flex = st.number_input("Elbow Flexion (°)",      min_value=0, max_value=145, value=100, step=1, key="el_flex")
+    with c2: f_sup   = st.number_input("Forearm Supination (°)", min_value=0, max_value=90,  value=70,  step=1, key="f_sup")
+    with c3: f_pro   = st.number_input("Forearm Pronation (°)",  min_value=0, max_value=90,  value=65,  step=1, key="f_pro")
+    with c4: w_flex  = st.number_input("Wrist Flexion (°)",      min_value=0, max_value=80,  value=55,  step=1, key="w_flex")
+    with c5: w_ext   = st.number_input("Wrist Extension (°)",    min_value=0, max_value=70,  value=45,  step=1, key="w_ext")
     st.pyplot(arm_diagram(el_flex,f_sup,f_pro,w_flex,w_ext))
 
 st.markdown("##### Arm Flexion & Extension")
 ac1,ac2=st.columns(2)
-with ac1: arm_flex=st.slider("Arm Flexion (°)",   0,145,100,key="arm_flex",
+with ac1: arm_flex=st.number_input("Arm Flexion (°)", min_value=0, max_value=145, value=100, step=1, key="arm_flex",
     help="Full elbow-to-shoulder curl — how far you can flex the arm toward you.")
-with ac2: arm_ext =st.slider("Arm Extension (°)", 0, 30,  10,key="arm_ext",
+with ac2: arm_ext =st.number_input("Arm Extension (°)", min_value=0, max_value=30, value=10, step=1, key="arm_ext",
     help="Hyperextension past neutral — how far the arm opens beyond straight.")
 
 bic_vals={"elbow_flexion":el_flex,"forearm_supination":f_sup,
@@ -800,8 +939,8 @@ with gc1:
 with gc2:
     st.markdown("#### ✊ Your Grip Diagram")
     c1,c2=st.columns(2)
-    with c1: grip    =st.slider("Grip Closure (%)",  0,100,75,key="grip")
-    with c2: fin_flex=st.slider("Finger Flexion (°)",0, 90,65,key="fin_flex")
+    with c1: grip     = st.number_input("Grip Closure (%)",      min_value=0, max_value=100, value=75,  step=1, key="grip")
+    with c2: fin_flex = st.number_input("Finger Flexion (°)",    min_value=0, max_value=90,  value=65,  step=1, key="fin_flex")
     st.pyplot(hand_diagram(grip,fin_flex))
 
 fist_vals={"grip_closure":grip,"finger_flexion":fin_flex}
