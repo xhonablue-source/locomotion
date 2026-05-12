@@ -95,6 +95,8 @@ OPT = {
     "forearm_pronation"  : ( 90, 75,  10),
     "wrist_flexion"      : ( 80, 50,  10),
     "wrist_extension"    : ( 70, 45,  10),
+    "arm_flexion"        : (145, 90,  12),
+    "arm_extension"      : ( 30, 15,  8),
     "grip_closure"       : (100, 80,  10),
     "finger_flexion"     : ( 90, 70,  10),
 }
@@ -405,7 +407,7 @@ def radar_chart(values_dict):
     fig.add_trace(go.Scatterpolar(r=[100]*len(cats)+[100],theta=cats+[cats[0]],
         fill='toself',fillcolor='#f1f5f9',line=dict(color='#e2e8f0',width=1),name='Machine Optimal'))
     fig.add_trace(go.Scatterpolar(r=scores+[scores[0]],theta=cats+[cats[0]],
-        fill='toself',fillcolor='#3b82f633',line=dict(color='#3b82f6',width=2.5),name='Student Synergy'))
+        fill='toself',fillcolor='rgba(59,130,246,0.2)',line=dict(color='#3b82f6',width=2.5),name='Student Synergy'))
     fig.update_layout(
         polar=dict(
             radialaxis=dict(visible=True,range=[0,100],
@@ -421,7 +423,7 @@ def sensor_chart(series,t,optimal,label,unit):
     fig.add_trace(go.Scatter(x=t,y=[optimal]*len(t),mode='lines',name='Machine Optimal',
         line=dict(color='#f97316',width=1.5,dash='dash')))
     fig.add_trace(go.Scatter(x=t,y=series,mode='lines',name='Sensor Reading',
-        line=dict(color='#3b82f6',width=2),fill='tonexty',fillcolor='#3b82f611'))
+        line=dict(color='#3b82f6',width=2),fill='tonexty',fillcolor='rgba(59,130,246,0.04)'))
     fig.update_layout(
         title=dict(text=label,font=dict(family='DM Sans',size=11,color='#374151')),
         paper_bgcolor=BG,plot_bgcolor=BG,
@@ -746,13 +748,22 @@ with gc2:
     with c5: w_ext  =st.slider("Wrist Extension (°)",    0, 70, 45,key="w_ext")
     st.pyplot(arm_diagram(el_flex,f_sup,f_pro,w_flex,w_ext))
 
+st.markdown("##### Arm Flexion & Extension")
+ac1,ac2=st.columns(2)
+with ac1: arm_flex=st.slider("Arm Flexion (°)",   0,145,100,key="arm_flex",
+    help="Full elbow-to-shoulder curl — how far you can flex the arm toward you.")
+with ac2: arm_ext =st.slider("Arm Extension (°)", 0, 30,  10,key="arm_ext",
+    help="Hyperextension past neutral — how far the arm opens beyond straight.")
+
 bic_vals={"elbow_flexion":el_flex,"forearm_supination":f_sup,
-           "forearm_pronation":f_pro,"wrist_flexion":w_flex,"wrist_extension":w_ext}
-cols=st.columns(5)
-for i,(key,val) in enumerate(bic_vals.items()):
+           "forearm_pronation":f_pro,"wrist_flexion":w_flex,"wrist_extension":w_ext,
+           "arm_flexion":arm_flex,"arm_extension":arm_ext}
+bic_cols=st.columns(4)
+bic_items=list(bic_vals.items())
+for i,(key,val) in enumerate(bic_items):
     hmax,opt,tol=OPT[key]; syn=synergy_score(val,opt,hmax); dev=deviation(val,opt)
     status,css=deviation_status(dev,tol); xp=xp_for_score(syn)
-    with cols[i]:
+    with bic_cols[i%4]:
         st.markdown(f"""
         <div class="mcard">
           <div class="mcard-t">{LABELS[key]}</div>
@@ -767,10 +778,10 @@ for i,(key,val) in enumerate(bic_vals.items()):
             <span class="iv {css}">{status}</span></div>
         </div>""", unsafe_allow_html=True)
 if show_arcs:
-    ac=st.columns(5)
-    for i,(key,val) in enumerate(bic_vals.items()):
+    ac=st.columns(4)
+    for i,(key,val) in enumerate(bic_items):
         hmax,opt,tol=OPT[key]
-        with ac[i]: st.plotly_chart(arc_chart(val,opt,hmax,LABELS[key],"°"),use_container_width=True)
+        with ac[i%4]: st.plotly_chart(arc_chart(val,opt,hmax,LABELS[key],"°"),use_container_width=True)
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 # SECTION 3 — FIST
