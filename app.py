@@ -1046,7 +1046,7 @@ if show_calib:
     st.markdown('<span class="pill p-z">🤖 Robot Calibration Parameters</span>',
                 unsafe_allow_html=True)
     def colour_syn(val): return f"color:{score_color(val)};font-weight:700"
-    st.dataframe(df_calib.style.applymap(colour_syn,subset=["Synergy %"]),
+    st.dataframe(df_calib.style.map(colour_syn,subset=["Synergy %"]),
                  use_container_width=True,hide_index=True)
     csv_buf=io.StringIO(); df_calib.to_csv(csv_buf,index=False)
     st.download_button("⬇️ Download Calibration CSV",data=csv_buf.getvalue(),
