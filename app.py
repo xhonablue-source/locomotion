@@ -301,6 +301,110 @@ def arm_diagram(elbow, sup, pro, wf, we):
     fig.tight_layout()
     return fig
 
+def finger_curl_diagram(grip, finger_flex):
+    """Original anatomical curling finger diagram — the one you liked!"""
+    grip_col   = score_color(synergy_score(grip, 80, 100))
+    finger_col = score_color(synergy_score(finger_flex, 70, 90))
+    closure    = grip / 100.0
+
+    fig, ax = plt.subplots(figsize=(5, 6), facecolor='#f8fafc')
+    ax.set_facecolor('#f8fafc')
+    ax.set_xlim(-2.0, 2.0)
+    ax.set_ylim(-0.8, 4.0)
+    ax.set_aspect('equal')
+    ax.axis('off')
+    ax.set_title(f"Grip: {grip}%  |  Finger Flexion: {finger_flex}°",
+                 fontsize=10, fontweight='bold', color='#374151', pad=10)
+
+    # Palm
+    palm = patches.FancyBboxPatch((-0.7, 0), 1.4, 1.1,
+        boxstyle="round,pad=0.1", linewidth=2,
+        edgecolor='#475569', facecolor='#cbd5e1', zorder=2)
+    ax.add_patch(palm)
+    ax.text(0, 0.55, "PALM", ha='center', va='center',
+            fontsize=7, color='#64748b', fontweight='bold')
+
+    # Thumb
+    thumb_angle = np.radians(150 - closure * 70)
+    tx = -0.75 + 0.55 * np.cos(thumb_angle)
+    ty = 0.4   + 0.55 * np.sin(thumb_angle)
+    ax.plot([-0.75, tx], [0.4, ty], color='#94a3b8',
+            linewidth=13, solid_capstyle='round', zorder=3)
+    ax.plot([-0.75, tx], [0.4, ty], color='#e2e8f0',
+            linewidth=9, solid_capstyle='round', zorder=4)
+
+    # Four fingers
+    finger_x    = [-0.48, -0.16,  0.16,  0.46]
+    base_lens   = [  0.55,  0.65,  0.62,  0.50]
+    mid_lens    = [  0.48,  0.55,  0.52,  0.42]
+    tip_lens    = [  0.32,  0.38,  0.36,  0.28]
+    knuckle_colors = ['#94a3b8'] * 4
+
+    for fx, bl, ml, tl, kc in zip(finger_x, base_lens, mid_lens, tip_lens, knuckle_colors):
+
+        # ── Base phalanx — always roughly vertical ──
+        base_angle = np.radians(88)
+        bx2 = fx  + bl * np.cos(base_angle)
+        by2 = 1.1 + bl * np.sin(base_angle)
+
+        ax.plot([fx, bx2], [1.1, by2], color='#64748b',
+                linewidth=11, solid_capstyle='round', zorder=3)
+        ax.plot([fx, bx2], [1.1, by2], color='#cbd5e1',
+                linewidth=7,  solid_capstyle='round', zorder=4)
+
+        # Knuckle dot
+        ax.plot(bx2, by2, 'o', color=kc, markersize=6, zorder=5)
+
+        # ── Mid phalanx — curls with finger_flex ──
+        flex_rad  = np.radians(finger_flex * 0.65)
+        mid_angle = base_angle - flex_rad
+        mx2 = bx2 + ml * np.cos(mid_angle)
+        my2 = by2 + ml * np.sin(mid_angle)
+
+        ax.plot([bx2, mx2], [by2, my2], color=finger_col,
+                linewidth=10, solid_capstyle='round', zorder=3)
+        ax.plot([bx2, mx2], [by2, my2], color='#f0fdf4' if finger_col=='#059669' else '#fff7ed' if finger_col=='#d97706' else '#fff1f2',
+                linewidth=6,  solid_capstyle='round', zorder=4)
+
+        ax.plot(mx2, my2, 'o', color=finger_col, markersize=5, zorder=5)
+
+        # ── Tip phalanx — curls further with closure ──
+        tip_angle = mid_angle - np.radians(closure * 55)
+        tx2 = mx2 + tl * np.cos(tip_angle)
+        ty2 = my2 + tl * np.sin(tip_angle)
+
+        ax.plot([mx2, tx2], [my2, ty2], color=grip_col,
+                linewidth=8, solid_capstyle='round', zorder=3)
+        ax.plot([mx2, tx2], [my2, ty2], color='#f0fdf4' if grip_col=='#059669' else '#fff7ed' if grip_col=='#d97706' else '#fff1f2',
+                linewidth=4,  solid_capstyle='round', zorder=4)
+
+    # Grip closure bar at bottom
+    bar_y = -0.5
+    ax.add_patch(patches.Rectangle((-1.5, bar_y), 3.0, 0.2,
+        color='#e2e8f0', zorder=2))
+    ax.add_patch(patches.Rectangle((-1.5, bar_y), 3.0*(grip/100), 0.2,
+        color=grip_col, zorder=3))
+    # Optimal marker
+    opt_x = -1.5 + 3.0*(80/100)
+    ax.plot([opt_x, opt_x], [bar_y-0.05, bar_y+0.25],
+            color='#f97316', linewidth=2, linestyle='--', zorder=4)
+    ax.text(opt_x, bar_y+0.32, 'Opt 80%',
+            ha='center', fontsize=7, color='#f97316', fontweight='bold')
+    ax.text(0, bar_y+0.1, f"Grip Closure: {grip}%",
+            ha='center', va='center', fontsize=8,
+            fontweight='bold', color='white' if grip>15 else '#374151', zorder=5)
+
+    # Legend
+    ax.text(-1.8, 3.7, "■ Base phalanx",   fontsize=7, color='#94a3b8')
+    ax.text(-1.8, 3.5, "■ Mid phalanx",    fontsize=7, color=finger_col)
+    ax.text(-1.8, 3.3, "■ Tip phalanx",    fontsize=7, color=grip_col)
+    ax.text( 0.2, 3.7, f"Flex: {finger_flex}°", fontsize=7, color=finger_col, fontweight='bold')
+    ax.text( 0.2, 3.5, f"Grip: {grip}%",        fontsize=7, color=grip_col,   fontweight='bold')
+
+    fig.tight_layout()
+    return fig
+
+
 def hand_diagram(grip, finger_flex):
     """Front-view hand — grip bar + finger arc dial."""
     grip_col   = score_color(synergy_score(grip, 80, 100))
@@ -1025,6 +1129,11 @@ if show_arcs:
     for i,(key,val) in enumerate(fist_vals.items()):
         hmax,opt,tol=OPT[key]
         with ac[i]: st.plotly_chart(arc_chart(val,opt,hmax,LABELS[key],UNITS[key]),use_container_width=True)
+
+# ── Curling finger diagram ──────────────────────────────────────
+st.markdown("#### ✊ Live Finger Flexion Visualiser")
+st.markdown("Watch your fingers curl in real time as you adjust grip closure and finger flexion.")
+st.pyplot(finger_curl_diagram(grip, fin_flex))
 
 # Combined
 all_vals  ={**sh_vals,**bic_vals,**fist_vals}
