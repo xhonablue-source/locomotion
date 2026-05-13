@@ -880,31 +880,37 @@ The robot gets **60°** of movement command. Not too much. Not too little.
 That's your math keeping the machine safe and smooth.
 """)
 
-with st.expander("Why not just send the robot your exact measurement?"):
-    st.markdown("""
-    Great question! Because **humans and robots have different limits.**
-
-    If your arm goes to 120° but the robot's optimal is only 90°,
-    sending 120° could:
-    - Overstress the robot joint
-    - Make the movement jerky and unsafe
-    - Damage the actuator (the robot muscle)
-
-    The function **scales** your movement to fit the machine perfectly.
-    This is called **normalisation** — and it's used in robotics, music production,
+st.markdown("""
+<div style="background:#fefce8;border:1px solid #fbbf24;border-left:4px solid #f59e0b;
+  border-radius:0 10px 10px 0;padding:16px 20px;margin:12px 0;">
+  <div style="font-weight:700;color:#111827;margin-bottom:8px;">
+    🤔 Why not just send the robot your exact measurement?</div>
+  <div style="color:#111827;font-size:.88rem;line-height:1.75;">
+    Great question! Because <strong>humans and robots have different limits.</strong><br><br>
+    If your arm goes to 120° but the robot's optimal is only 90°, sending 120° could:<br>
+    &nbsp;&nbsp;• Overstress the robot joint<br>
+    &nbsp;&nbsp;• Make the movement jerky and unsafe<br>
+    &nbsp;&nbsp;• Damage the actuator (the robot muscle)<br><br>
+    The function <strong>scales</strong> your movement to fit the machine perfectly.
+    This is called <strong>normalisation</strong> — used in robotics, music production,
     video game controllers, and medical devices every day.
-    """)
+  </div>
+</div>""", unsafe_allow_html=True)
 
-with st.expander("What does degrees (°) actually mean?"):
-    st.markdown("""
-    Degrees measure how far something rotates.
-    - 0° = no movement (arm straight down)
-    - 90° = a right angle (arm straight out to the side)
-    - 180° = arm straight up above your head
-
-    When we say your shoulder abduction is **120°**, we mean you can raise
+st.markdown("""
+<div style="background:#f0f9ff;border:1px solid #7dd3fc;border-left:4px solid #0891b2;
+  border-radius:0 10px 10px 0;padding:16px 20px;margin:12px 0;">
+  <div style="font-weight:700;color:#111827;margin-bottom:8px;">
+    📐 What does degrees (°) actually mean?</div>
+  <div style="color:#111827;font-size:.88rem;line-height:1.75;">
+    Degrees measure how far something rotates.<br>
+    &nbsp;&nbsp;• <strong>0°</strong> = no movement (arm straight down)<br>
+    &nbsp;&nbsp;• <strong>90°</strong> = a right angle (arm straight out to the side)<br>
+    &nbsp;&nbsp;• <strong>180°</strong> = arm straight up above your head<br><br>
+    When we say your shoulder abduction is <strong>120°</strong>, we mean you can raise
     your arm 120 degrees away from your body — two thirds of the way to straight up.
-    """)
+  </div>
+</div>""", unsafe_allow_html=True)
 
 st.markdown("---")
 
