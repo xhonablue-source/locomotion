@@ -1788,7 +1788,7 @@ st.markdown("---")
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 # MODERN WEB RESOURCES
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-st.subheader("🌐 Modern Links — The Real World of Robotics & Biomechanics")
+st.subheader("🌐 Meet the Machines — Real Robotics in the Wild")
 st.markdown("These are the actual companies, labs, and tools that use the math you just learned.")
 
 modern_categories = {
