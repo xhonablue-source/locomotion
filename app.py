@@ -554,14 +554,35 @@ Your arm moves in *degrees*. The robot understands *electrical signals*.
 st.info("📚 **8th Grade Standards:** NGSS MS-PS2 · Michigan Merit Curriculum · "
         "8.F.A.1 Functions · 8.EE.B.5 Proportional Relationships · CSTA 2-AP-14")
 
-standard = st.selectbox("📋 Select your standard focus:", [
-    "8.F.A.1 — Understand that a function assigns exactly one output to each input",
-    "8.F.A.2 — Compare properties of two functions (tables, graphs, equations)",
-    "8.F.B.4 — Construct a function to model a linear relationship",
-    "8.EE.B.5 — Graph proportional relationships, interpret unit rate as slope",
-    "NGSS MS-PS2-2 — Apply Newton's Third Law to design a solution",
-    "CSTA 2-AP-14 — Use functions to organise code and make it reusable",
+st.markdown("#### 📋 Common Core & NGSS Standards Covered in This Lesson")
+standard = st.selectbox("Select a standard to highlight:", [
+    "8.F.A.1 — A function assigns exactly one output to each input (core of every locomotion function)",
+    "8.F.A.2 — Compare functions: human range vs machine optimal across 13 joint axes",
+    "8.F.B.4 — Construct a linear function: f(θ) = (θ ÷ human_max) × machine_optimal",
+    "8.EE.B.5 — Proportional relationships: control signal scales proportionally with measurement",
+    "8.EE.C.7 — Solve linear equations: find θ when control signal = target value",
+    "NGSS MS-PS2-2 — Apply Newton's Third Law: robot exerts equal/opposite force on pilot",
+    "NGSS MS-PS3-1 — Kinetic energy of robot joints relates to angular velocity and mass",
+    "CSTA 2-AP-14 — Functions used to organise calibration, synergy, and sensor calculations",
+    "CSTA 2-DA-08 — Collect and analyse data (sensor readings) to refine a computational model",
 ])
+
+std_tips = {
+    "8.F.A.1": "Every input box in this app IS a function — one measurement maps to exactly one control signal.",
+    "8.F.A.2": "Compare your shoulder synergy vs grip synergy — two functions, two different outputs from similar inputs.",
+    "8.F.B.4": "The normalisation formula f(θ)=(θ÷max)×optimal is a linear function. Its slope = optimal÷max.",
+    "8.EE.B.5": "If your arm moves twice as far, the robot gets twice the signal — that is a proportional relationship.",
+    "8.EE.C.7": "Challenge: if the robot needs a 60° signal and your max is 180°, what must you measure?",
+    "NGSS MS-PS2-2": "When your arm pushes the exoskeleton joint, the joint pushes back on your arm with equal force.",
+    "NGSS MS-PS3-1": "Faster joint rotation = more kinetic energy. The robot must safely absorb and redirect that energy.",
+    "CSTA 2-AP-14": "synergy_score(), normalise_to_machine(), and sensor_rmse() are all reusable functions in this app.",
+    "CSTA 2-DA-08": "The sensor simulation generates data — RMSE and lag are the analysis that refines the robot model.",
+}
+for key, tip in std_tips.items():
+    if key in standard:
+        st.success(f"💡 **Connection to this lesson:** {tip}")
+        break
+
 
 st.markdown("---")
 
@@ -1366,6 +1387,374 @@ st.markdown(f"""
 The closer your motion aligns with the machine optimal — the smoother, safer,
 and more powerful the robot becomes. *You are the function.*
 """)
+st.markdown("---")
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# RESOURCES — IXL, KHAN ACADEMY, TOOLS
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+st.header("📚 Practice Resources & Related Lessons")
+st.markdown("Use these to go deeper on the math behind the locomotion functions.")
+
+res_strand = st.selectbox("Filter resources by standard:", [
+    "8.F.A.1 — Functions (one input → one output)",
+    "8.F.B.4 — Constructing linear functions",
+    "8.EE.B.5 — Proportional relationships & slope",
+    "NGSS MS-PS2 — Forces & Motion",
+    "All Resources",
+], key="res_strand")
+
+# IXL
+st.subheader("🎯 IXL Practice Lessons")
+ixl_lessons = {
+    "Grade 8 — Functions": [
+        ("8.F.A.1", "Identify functions from tables and graphs",           "https://www.ixl.com/math/grade-8/identify-functions"),
+        ("8.F.A.1", "Evaluate a function — find f(x) for a given input",  "https://www.ixl.com/math/grade-8/evaluate-a-function"),
+        ("8.F.A.2", "Compare linear functions: tables, graphs, equations", "https://www.ixl.com/math/grade-8/compare-linear-functions"),
+        ("8.F.B.4", "Write a linear function from a word problem",         "https://www.ixl.com/math/grade-8/write-a-linear-function-word-problems"),
+        ("8.F.B.4", "Interpret the slope and y-intercept of a function",   "https://www.ixl.com/math/grade-8/slope-intercept-form"),
+    ],
+    "Grade 8 — Equations & Proportions": [
+        ("8.EE.B.5", "Graph a proportional relationship",                  "https://www.ixl.com/math/grade-8/graph-a-proportional-relationship"),
+        ("8.EE.B.5", "Find the constant of proportionality from a graph",  "https://www.ixl.com/math/grade-8/constant-of-proportionality"),
+        ("8.EE.C.7", "Solve linear equations with variables on both sides","https://www.ixl.com/math/grade-8/solve-linear-equations"),
+    ],
+    "Algebra 1 — Functions (Enrichment)": [
+        ("HSA.F.IF.1", "Domain and range of a function",                   "https://www.ixl.com/math/algebra-1/domain-and-range"),
+        ("HSA.F.IF.2", "Evaluate a function for a given input",            "https://www.ixl.com/math/algebra-1/evaluate-functions"),
+        ("HSA.F.BF.1", "Write a function from a real-world situation",     "https://www.ixl.com/math/algebra-1/write-a-linear-function-word-problems"),
+        ("HSA.F.IF.4", "Interpret key features of a function graph",       "https://www.ixl.com/math/algebra-1/interpret-a-graph"),
+    ],
+}
+
+for topic, lessons in ixl_lessons.items():
+    with st.expander(f"📖 {topic}"):
+        for std, name, url in lessons:
+            st.markdown(f"[🔗 **{name}**]({url})  `{std}`")
+
+st.markdown("---")
+
+# Khan Academy
+st.subheader("🎓 Khan Academy Videos & Exercises")
+khan = {
+    "What is a Function?": (
+        "The foundation of this entire lesson — one input, one output.",
+        "https://www.khanacademy.org/math/cc-eighth-grade-math/cc-8th-linear-equations-functions/8th-functions-and-function-notation/v/what-is-a-function"
+    ),
+    "Evaluating Functions": (
+        "Practice plugging in values — exactly what f(θ)=(θ÷max)×optimal does.",
+        "https://www.khanacademy.org/math/cc-eighth-grade-math/cc-8th-linear-equations-functions/8th-functions-and-function-notation/e/evaluating-functions"
+    ),
+    "Graphing Linear Functions": (
+        "Visualise how your control signal grows linearly with your measurement.",
+        "https://www.khanacademy.org/math/cc-eighth-grade-math/cc-8th-linear-equations-functions/8th-slope-intercept-form/v/slope-intercept-form"
+    ),
+    "Proportional Relationships": (
+        "Understand why doubling your arm movement doubles the robot signal.",
+        "https://www.khanacademy.org/math/cc-seventh-grade-math/cc-7th-ratio-proportion/cc-7th-proportional-rel/v/proportional-relationships"
+    ),
+    "Introduction to Robotics (NGSS)": (
+        "Forces, motion, and Newton's 3rd Law — the physics behind the exoskeleton.",
+        "https://www.khanacademy.org/science/ms-physics/x1baed5db7e7a5ec5:forces-and-newtons-laws-of-motion"
+    ),
+}
+
+kc1, kc2 = st.columns(2)
+for i, (title, (desc, url)) in enumerate(khan.items()):
+    with (kc1 if i % 2 == 0 else kc2):
+        st.markdown(f"""
+        <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:14px 16px;margin-bottom:10px;">
+          <div style="font-size:.8rem;font-weight:700;color:#1a1a2e;margin-bottom:4px;">🎓 {title}</div>
+          <div style="font-size:.74rem;color:#64748b;margin-bottom:8px;">{desc}</div>
+          <a href="{url}" target="_blank" style="font-size:.7rem;font-weight:700;color:#1d4ed8;text-decoration:none;">
+            Watch / Practice on Khan Academy →</a>
+        </div>""", unsafe_allow_html=True)
+
+st.markdown("---")
+
+# Interactive Tools
+st.subheader("🛠️ Interactive Tools")
+tools = {
+    "📺 Video Tutorials": [
+        ("3Blue1Brown — What is a Function?",      "https://www.youtube.com/watch?v=kvGsIo1TmsM",      "Visual, intuitive explanation of functions and mappings"),
+        ("Crash Course — Intro to Robotics",       "https://www.youtube.com/watch?v=AZSiqj7HDQY",      "How robots use sensors, actuators, and control functions"),
+        ("Khan Academy — Functions Playlist",      "https://www.khanacademy.org/math/cc-eighth-grade-math/cc-8th-linear-equations-functions","Complete 8th grade functions video series"),
+    ],
+    "💻 Interactive Calculators": [
+        ("Desmos — Graph Your Locomotion Function","https://www.desmos.com/calculator",               "Type f(x)=(x/180)*90 and see your shoulder function graphed live"),
+        ("GeoGebra — Function Explorer",          "https://www.geogebra.org/graphing",               "Drag sliders to see how changing max range shifts the function"),
+        ("Wolfram Alpha — Function Solver",        "https://www.wolframalpha.com/",                   "Solve: given control signal = 60, human_max = 180, what is θ?"),
+    ],
+    "📖 Reading & Reference": [
+        ("Math Is Fun — Functions",                "https://www.mathsisfun.com/sets/function.html",    "Clear, visual explanation of functions with worked examples"),
+        ("NASA — Robotics & Math",                 "https://www.nasa.gov/stem/nextgenstem/robotics/",  "How NASA engineers use functions to program robot arms"),
+        ("Paul's Online Math Notes — Functions",  "https://tutorial.math.lamar.edu/Classes/Alg/Functions.aspx","Detailed notes with practice problems"),
+    ],
+    "🎮 Games & Practice": [
+        ("Function Machine — Math Playground",    "https://www.mathplayground.com/functionmachine.html","Interactive: guess the function rule from inputs and outputs"),
+        ("Manga High — Algebra Games",            "https://www.mangahigh.com/",                        "Gamified algebra and function practice"),
+        ("Prodigy Math — Grade 8",               "https://www.prodigygame.com/",                      "Adaptive math game covering 8th grade standards"),
+    ],
+}
+
+tool_tabs = st.tabs(list(tools.keys()))
+for tab, (category, items) in zip(tool_tabs, tools.items()):
+    with tab:
+        for name, url, desc in items:
+            st.markdown(f"**[{name}]({url})**")
+            st.caption(desc)
+            st.write("---")
+
+st.markdown("---")
+
+# Study Plan
+st.subheader("📅 Personalised Study Plan")
+level = st.selectbox("Your current comfort with functions:", [
+    "🌱 Beginner — I'm not sure what a function is yet",
+    "📈 Developing — I understand input/output but need practice",
+    "✅ Proficient — I can write and evaluate functions",
+    "🚀 Advanced — I want to go beyond 8th grade",
+], key="study_level")
+time_avail = st.selectbox("Time per week to study:", ["1–2 hours","3–4 hours","5+ hours"], key="study_time")
+
+if st.button("Generate My Study Plan", key="study_plan_btn"):
+    st.success("🎯 Your Personalised Locomotion + Functions Study Plan:")
+    if "Beginner" in level:
+        st.markdown("""
+        **Week 1 — Build the Foundation**
+        - Watch Khan Academy: *What is a Function?*
+        - Play Function Machine on Math Playground (10 min/day)
+        - IXL: *Identify functions from tables and graphs* (8.F.A.1)
+        - In this app: focus on the shoulder section — one slider, watch the control signal change
+
+        **Week 2 — Connect to the Robot**
+        - IXL: *Evaluate a function — find f(x) for a given input* (8.F.A.1)
+        - Practice the formula: f(θ) = (θ ÷ 180) × 90 with different shoulder values
+        - Draw your robot arm at 3 different angles and label the control signal each time
+        """)
+    elif "Developing" in level:
+        st.markdown("""
+        **Week 1 — Strengthen Function Skills**
+        - IXL: *Write a linear function from a word problem* (8.F.B.4)
+        - Desmos: graph f(x) = (x/145)*90 — your elbow function
+        - In this app: record your measurements and calculate control signals by hand, then check
+
+        **Week 2 — Proportional Relationships**
+        - IXL: *Graph a proportional relationship* (8.EE.B.5)
+        - Khan Academy: *Proportional Relationships* video
+        - Challenge: if your grip doubles from 40% to 80%, does the control signal also double?
+        """)
+    elif "Proficient" in level:
+        st.markdown("""
+        **Week 1 — Function Composition**
+        - IXL: *Domain and range of a function* (HSA.F.IF.1)
+        - Explore: what happens when you compose two locomotion functions?
+        - GeoGebra: build a slider model of all 3 joint groups
+
+        **Week 2 — Real Engineering Applications**
+        - Research: how do actual exoskeleton companies (Ekso, ReWalk) calibrate their suits?
+        - Write your own Python function for synergy_score() from scratch
+        - IXL: *Interpret key features of a function graph* (HSA.F.IF.4)
+        """)
+    else:
+        st.markdown("""
+        **Ongoing Advanced Challenge**
+        - Study inverse functions: given a control signal, solve for the human measurement needed
+        - Research RMSE in machine learning — it's the same formula used in AI training
+        - Build your own sensor simulation: add Gaussian noise to a signal and calculate drift
+        - Explore Algebra 2: piecewise functions to model human joint limits with injury thresholds
+        - Khan Academy: *Introduction to Calculus* — how derivatives model joint velocity
+        """)
+
+    tips = {
+        "1–2 hours": "💡 **Tip:** 15 minutes daily beats 2 hours on one day. One IXL skill + 5 minutes in this app each day.",
+        "3–4 hours": "💡 **Tip:** Split time 50/50 — half watching/reading, half hands-on practice in this app and Desmos.",
+        "5+ hours":  "💡 **Tip:** Teach it to someone else. Explaining synergy scores or the normalisation formula to a classmate is the deepest learning.",
+    }
+    for t, tip in tips.items():
+        if t in time_avail:
+            st.info(tip)
+
+
+st.markdown("---")
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# MODERN WEB RESOURCES
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+st.subheader("🌐 Modern Links — The Real World of Robotics & Biomechanics")
+st.markdown("These are the actual companies, labs, and tools that use the math you just learned.")
+
+modern_categories = {
+    "🦾 Real Exoskeleton Companies": [
+        {
+            "name"  : "Ekso Bionics",
+            "url"   : "https://eksobionics.com",
+            "desc"  : "Medical exoskeleton suits helping people walk again after spinal injury. Their calibration system runs locomotion functions for every patient — exactly what you built today.",
+            "tag"   : "Industry Leader · Medical Robotics",
+            "color" : "#0891b2",
+        },
+        {
+            "name"  : "ReWalk Robotics",
+            "url"   : "https://rewalk.com",
+            "desc"  : "FDA-cleared wearable robotic exoskeletons for people with lower limb disabilities. Uses sensor data and motion functions to synchronise human and machine movement.",
+            "tag"   : "FDA Approved · Wearable Tech",
+            "color" : "#7c3aed",
+        },
+        {
+            "name"  : "Sarcos Technology",
+            "url"   : "https://sarcos.com",
+            "desc"  : "Full-body industrial exoskeleton (Guardian XO) that amplifies human strength up to 20x. The control system maps human force to machine output — a real-world version of your synergy function.",
+            "tag"   : "Industrial · Strength Amplification",
+            "color" : "#059669",
+        },
+        {
+            "name"  : "Hyundai / Boston Dynamics",
+            "url"   : "https://www.bostondynamics.com",
+            "desc"  : "Atlas, Spot, and Stretch — the world's most advanced robots. Their motion planning uses the same normalisation and sensor feedback principles covered in this lesson.",
+            "tag"   : "Cutting Edge · Humanoid Robots",
+            "color" : "#dc2626",
+        },
+    ],
+    "🔬 Research Labs & Science": [
+        {
+            "name"  : "MIT CSAIL — Robotics",
+            "url"   : "https://www.csail.mit.edu/research/robotics",
+            "desc"  : "MIT's Computer Science & AI Lab publishes open research on robot locomotion, sensor fusion, and human-robot interaction. This is where the math you used gets invented.",
+            "tag"   : "MIT · Open Research",
+            "color" : "#0f3460",
+        },
+        {
+            "name"  : "NASA JPL — Robotics",
+            "url"   : "https://www-robotics.jpl.nasa.gov",
+            "desc"  : "JPL engineers built the Mars rovers using the same locomotion functions — mapping terrain sensor data to wheel control signals. Your calibration table is their rover software.",
+            "tag"   : "NASA · Space Robotics",
+            "color" : "#1d4ed8",
+        },
+        {
+            "name"  : "Stanford Human-Robot Interaction Lab",
+            "url"   : "https://hri.stanford.edu",
+            "desc"  : "Researches how robots and humans move together safely — the science behind synergy scores. Publishes student-accessible papers.",
+            "tag"   : "Stanford · Human-Robot Synergy",
+            "color" : "#b91c1c",
+        },
+        {
+            "name"  : "OpenStax — College Physics",
+            "url"   : "https://openstax.org/books/college-physics-2e/pages/1-introduction-to-science-and-the-realm-of-physics-physical-quantities-and-units",
+            "desc"  : "Free, peer-reviewed physics textbook covering forces, motion, and angular measurement — the physics behind every degree you measured today.",
+            "tag"   : "Free Textbook · NGSS Aligned",
+            "color" : "#d97706",
+        },
+    ],
+    "💻 Code & Build": [
+        {
+            "name"  : "Tinkercad Circuits (Autodesk)",
+            "url"   : "https://www.tinkercad.com",
+            "desc"  : "Free browser-based tool to design and simulate robot circuits. Build the sensor circuit that would read the joint angles you measured today — no hardware needed.",
+            "tag"   : "Free · Browser-Based · Arduino",
+            "color" : "#f97316",
+        },
+        {
+            "name"  : "Scratch — MIT (Robotics Projects)",
+            "url"   : "https://scratch.mit.edu/studios/1243295",
+            "desc"  : "Community of robotics simulation projects built in Scratch. See how other students have built function machines and motion simulators.",
+            "tag"   : "MIT · Beginner Friendly",
+            "color" : "#eab308",
+        },
+        {
+            "name"  : "Python.org — Getting Started",
+            "url"   : "https://www.python.org/about/gettingstarted/",
+            "desc"  : "This entire app was written in Python. The functions synergy_score() and normalise_to_machine() you used today are real Python code. Start here to write your own.",
+            "tag"   : "Python · Free · Industry Standard",
+            "color" : "#3b82f6",
+        },
+        {
+            "name"  : "Streamlit — Build Your Own App",
+            "url"   : "https://streamlit.io",
+            "desc"  : "The platform this app runs on. Free, Python-based, deploys in minutes. Build your own locomotion profiler or math tool and share it with anyone.",
+            "tag"   : "Free · Deploy Instantly",
+            "color" : "#e11d48",
+        },
+    ],
+    "📰 Stay Current — Robotics News": [
+        {
+            "name"  : "IEEE Spectrum — Robotics",
+            "url"   : "https://spectrum.ieee.org/robotics",
+            "desc"  : "The world's leading engineering publication. Covers the latest exoskeleton breakthroughs, AI-driven motion systems, and human augmentation technology.",
+            "tag"   : "Weekly Updates · Engineer-Written",
+            "color" : "#0891b2",
+        },
+        {
+            "name"  : "TechCrunch — Robotics",
+            "url"   : "https://techcrunch.com/category/robotics",
+            "desc"  : "Startup and industry news on the latest robotic suits, prosthetics, and human augmentation companies raising funding and shipping products.",
+            "tag"   : "Industry News · Startups",
+            "color" : "#16a34a",
+        },
+        {
+            "name"  : "Science News for Students",
+            "url"   : "https://www.snexplores.org/topic/technology-engineering",
+            "desc"  : "Peer-reviewed science news written specifically for middle and high school students. Covers robotics, biomechanics, and engineering at your level.",
+            "tag"   : "8th Grade Level · Peer Reviewed",
+            "color" : "#7c3aed",
+        },
+        {
+            "name"  : "FIRST Robotics Competition",
+            "url"   : "https://www.firstinspires.org/robotics/frc",
+            "desc"  : "The premier high school robotics competition. Teams build full robots using the exact same function-based control systems. Sign up starts in September.",
+            "tag"   : "Competition · Scholarships Available",
+            "color" : "#dc2626",
+        },
+    ],
+    "🎓 Career Pathways": [
+        {
+            "name"  : "Bureau of Labor Statistics — Robotics Engineers",
+            "url"   : "https://www.bls.gov/ooh/architecture-and-engineering/mechanical-engineers.htm",
+            "desc"  : "Median salary: $99,510/year. Job growth: 10% (faster than average). The math you learned today is required in every robotics engineering program.",
+            "tag"   : "Career Data · Official US Stats",
+            "color" : "#0f3460",
+        },
+        {
+            "name"  : "Code.org — AP Computer Science",
+            "url"   : "https://code.org/teach/csp",
+            "desc"  : "Free AP Computer Science Principles curriculum. The functions unit directly connects to normalise_to_machine() and synergy_score() from today's lesson.",
+            "tag"   : "Free · AP Credit · 9–12",
+            "color" : "#1d4ed8",
+        },
+        {
+            "name"  : "Michigan Works! — STEM Careers",
+            "url"   : "https://www.michiganworks.org",
+            "desc"  : "Michigan-specific career resources. Detroit's auto industry is the largest employer of robotics engineers in the US — right in your backyard.",
+            "tag"   : "Michigan · Local Careers",
+            "color" : "#059669",
+        },
+    ],
+}
+
+for category, links in modern_categories.items():
+    st.markdown(f"### {category}")
+    link_cols = st.columns(2)
+    for i, link in enumerate(links):
+        with link_cols[i % 2]:
+            st.markdown(f"""
+            <a href="{link['url']}" target="_blank" style="text-decoration:none;">
+              <div style="background:#f8fafc;border:1px solid #e2e8f0;border-left:4px solid {link['color']};
+                border-radius:0 10px 10px 0;padding:14px 16px;margin-bottom:12px;
+                transition:background 0.2s;">
+                <div style="font-size:.82rem;font-weight:700;color:#1a1a2e;margin-bottom:3px;">
+                  {link['name']} ↗</div>
+                <div style="font-size:.75rem;color:#475569;line-height:1.6;margin-bottom:6px;">
+                  {link['desc']}</div>
+                <span style="font-size:.62rem;font-weight:700;color:{link['color']};
+                  background:{link['color']}15;padding:2px 8px;border-radius:99px;">
+                  {link['tag']}</span>
+              </div>
+            </a>""", unsafe_allow_html=True)
+    st.markdown("")
+
+
+st.markdown("---")
+st.markdown(f"**🎯 Standard Focus:** {standard}")
+st.markdown("**📍 Michigan Merit Curriculum & Common Core:** This lesson supports 8th grade function standards, NGSS motion & forces, and applied mathematics through robotics.")
+
 st.markdown("---")
 st.markdown("""
 <div style="text-align:center;font-size:.72rem;color:#94a3b8;padding:16px 0 8px;">
