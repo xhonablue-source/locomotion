@@ -91,9 +91,25 @@ div[data-testid="stSidebar"] span,
 div[data-testid="stSidebar"] label,
 div[data-testid="stSidebar"] div { color: #111827 !important; }
 
-/* ── Expander ── */
-[data-testid="stExpander"] summary,
-[data-testid="stExpander"] p { color: #111827 !important; }
+/* ── Expander — protect icon font, only colour the label text ── */
+[data-testid="stExpander"] summary {
+  color: #111827 !important;
+}
+[data-testid="stExpander"] summary p,
+[data-testid="stExpander"] summary span {
+  color: #111827 !important;
+}
+/* Protect Streamlit's internal SVG/icon elements from colour override */
+[data-testid="stExpander"] summary svg,
+[data-testid="stExpander"] summary svg path,
+button[data-testid="stBaseButton-header"] svg,
+button[data-testid="stBaseButton-header"] svg path,
+.stExpanderIcon, .stExpanderIcon *,
+[data-baseweb="accordion"] svg,
+[data-baseweb="accordion"] svg path { 
+  color: unset !important; 
+  fill: #374151 !important;
+}
 
 .main,.block-container{ background:#f5f5f3 !important; }
 .dev-credit{background:linear-gradient(135deg,#0f3460 0%,#16213e 100%);
