@@ -30,8 +30,72 @@ st.set_page_config(
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=DM+Mono:wght@400;500&display=swap');
-html,body,[class*="css"]{font-family:'DM Sans',sans-serif;background:#fff;color:#1a1a2e;}
-.main,.block-container{background:#fff;}
+
+/* ── Base reset — force dark text on all elements on all devices ── */
+html, body { background:#f5f5f3 !important; color:#111827 !important; }
+[class*="css"], .main, .block-container,
+section[data-testid="stSidebar"],
+div[data-testid="stAppViewContainer"] {
+  background:#f5f5f3 !important;
+  color:#111827 !important;
+}
+
+/* ── Force ALL text elements dark ── */
+p, span, div, li, label, small, caption,
+h1, h2, h3, h4, h5, h6,
+.stMarkdown, .stMarkdown p, .stMarkdown li,
+.stMarkdown span, .stMarkdown div,
+[data-testid="stMarkdownContainer"] p,
+[data-testid="stMarkdownContainer"] li,
+[data-testid="stMarkdownContainer"] span {
+  color: #111827 !important;
+  font-family: 'DM Sans', sans-serif !important;
+}
+
+/* ── Streamlit widget labels ── */
+label, .stSelectbox label, .stRadio label,
+.stNumberInput label, .stTextInput label,
+.stTextArea label, .stToggle label {
+  color: #111827 !important;
+  font-weight: 600 !important;
+}
+
+/* ── Input fields ── */
+input, textarea, select,
+[data-testid="stNumberInput"] input,
+[data-testid="stTextInput"] input {
+  color: #111827 !important;
+  background: #ffffff !important;
+  border: 1.5px solid #d1d5db !important;
+}
+
+/* ── Info / success / warning boxes ── */
+[data-testid="stAlert"] p,
+[data-testid="stAlert"] div,
+.stAlert p { color: #111827 !important; }
+
+/* ── Code blocks ── */
+code, pre { color: #1e40af !important; background:#eff6ff !important; }
+
+/* ── Dataframe text ── */
+[data-testid="stDataFrame"] td,
+[data-testid="stDataFrame"] th { color: #111827 !important; }
+
+/* ── Sidebar ── */
+div[data-testid="stSidebar"] {
+  background: #f0ede8 !important;
+  border-right: 1px solid #d1d5db;
+}
+div[data-testid="stSidebar"] p,
+div[data-testid="stSidebar"] span,
+div[data-testid="stSidebar"] label,
+div[data-testid="stSidebar"] div { color: #111827 !important; }
+
+/* ── Expander ── */
+[data-testid="stExpander"] summary,
+[data-testid="stExpander"] p { color: #111827 !important; }
+
+.main,.block-container{ background:#f5f5f3 !important; }
 .dev-credit{background:linear-gradient(135deg,#0f3460 0%,#16213e 100%);
   padding:20px;border-radius:10px;margin-bottom:20px;box-shadow:0 4px 6px rgba(0,0,0,.1);}
 .dev-credit h2{margin:0;color:white;font-size:1.3rem;}
@@ -44,19 +108,19 @@ html,body,[class*="css"]{font-family:'DM Sans',sans-serif;background:#fff;color:
 .p-x{background:#d97706;}.p-y{background:#e11d48;}.p-z{background:#374151;}
 .p-g{background:linear-gradient(90deg,#f59e0b,#ef4444);}
 .p-ai{background:linear-gradient(90deg,#7c3aed,#0891b2);}
-.mcard{background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:16px 20px;margin-bottom:10px;}
-.mcard-t{font-size:.7rem;color:#64748b;font-weight:500;margin:0 0 2px;}
-.mcard-v{font-size:1.9rem;font-weight:700;font-family:'DM Mono',monospace;color:#1a1a2e;}
-.mcard-u{font-size:.72rem;color:#94a3b8;}
+.mcard{background:#ffffff;border:2px solid #d1d5db;border-radius:12px;padding:16px 20px;margin-bottom:10px;}
+.mcard-t{font-size:.7rem;color:#374151 !important;font-weight:600;margin:0 0 2px;}
+.mcard-v{font-size:1.9rem;font-weight:700;font-family:'DM Mono',monospace;color:#111827 !important;}
+.mcard-u{font-size:.72rem;color:#6b7280 !important;}
 .xp-chip{display:inline-block;background:#fef3c7;border:1px solid #fbbf24;
   color:#92400e;font-size:.65rem;font-weight:700;padding:2px 8px;border-radius:99px;margin-top:4px;}
 .syn-box{border-radius:12px;padding:20px 14px;text-align:center;margin-bottom:10px;}
 .syn-n{font-size:2.8rem;font-weight:700;font-family:'DM Mono',monospace;line-height:1;}
-.syn-l{font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;color:#64748b;margin-top:4px;}
+.syn-l{font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;color:#374151 !important;margin-top:4px;font-weight:600;}
 .irow{display:flex;justify-content:space-between;align-items:center;
-  padding:9px 13px;background:#f1f5f9;border-radius:8px;margin-bottom:5px;}
-.ik{font-size:.76rem;color:#475569;font-weight:500;}
-.iv{font-size:.8rem;font-family:'DM Mono',monospace;font-weight:600;}
+  padding:9px 13px;background:#e8ecf0;border-radius:8px;margin-bottom:5px;border:1px solid #d1d5db;}
+.ik{font-size:.76rem;color:#374151 !important;font-weight:600;}
+.iv{font-size:.8rem;font-family:'DM Mono',monospace;font-weight:700;color:#111827 !important;}
 .ok{color:#059669;}.warn{color:#d97706;}.bad{color:#e11d48;}
 .xp-bar-wrap{background:#e2e8f0;border-radius:99px;height:14px;width:100%;margin:6px 0 2px;}
 .xp-bar{height:14px;border-radius:99px;background:linear-gradient(90deg,#f59e0b,#ef4444);}
@@ -954,7 +1018,7 @@ with gc1:
     st.markdown("#### 🖼️ Shoulder Anatomy Reference")
     st.markdown("""
     <div style="background:#f1f5f9;border:1px solid #e2e8f0;border-radius:10px;padding:16px;text-align:center;">
-      <div style="font-size:3rem;">🫁</div>
+      <div style="font-size:3rem;">🦴</div>
       <div style="font-weight:700;color:#7c3aed;margin:6px 0 4px;">Glenohumeral Joint</div>
       <div style="font-size:.78rem;color:#64748b;line-height:1.7;">
         The shoulder is a <strong>ball-and-socket joint</strong>.<br>
