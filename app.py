@@ -880,7 +880,7 @@ The robot gets **60°** of movement command. Not too much. Not too little.
 That's your math keeping the machine safe and smooth.
 """)
 
-with st.expander("🤔 Why not just send the robot your exact measurement?"):
+with st.expander("Why not just send the robot your exact measurement?"):
     st.markdown("""
     Great question! Because **humans and robots have different limits.**
 
@@ -895,7 +895,7 @@ with st.expander("🤔 Why not just send the robot your exact measurement?"):
     video game controllers, and medical devices every day.
     """)
 
-with st.expander("📐 What does ° (degrees) actually mean?"):
+with st.expander("What does degrees (°) actually mean?"):
     st.markdown("""
     Degrees measure how far something rotates.
     - 0° = no movement (arm straight down)
