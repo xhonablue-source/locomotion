@@ -1651,9 +1651,13 @@ ixl_lessons = {
 }
 
 for topic, lessons in ixl_lessons.items():
-    with st.expander(f"{topic}"):
-        for std, name, url in lessons:
-            st.markdown(f"[🔗 **{name}**]({url})  `{std}`")
+    st.markdown(f"""
+    <div style="background:#ffffff;border:1px solid #d1d5db;border-left:4px solid #e11d48;
+      border-radius:0 8px 8px 0;padding:12px 16px;margin-bottom:10px;">
+      <div style="font-size:.8rem;font-weight:700;color:#111827;margin-bottom:8px;">
+        📋 {topic}</div>
+      {"".join(f'<div style="margin-bottom:6px;"><a href="{url}" target="_blank" style="font-size:.8rem;font-weight:600;color:#1d4ed8;text-decoration:none;">🔗 {name}</a> <code style="font-size:.68rem;background:#f1f5f9;padding:1px 5px;border-radius:4px;color:#374151;">{std}</code></div>' for std, name, url in lessons)}
+    </div>""", unsafe_allow_html=True)
 
 st.markdown("---")
 
