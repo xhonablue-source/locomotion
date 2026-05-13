@@ -1635,7 +1635,7 @@ ixl_lessons = {
 }
 
 for topic, lessons in ixl_lessons.items():
-    with st.expander(f"▶ {topic}"):
+    with st.expander(f"{topic}"):
         for std, name, url in lessons:
             st.markdown(f"[🔗 **{name}**]({url})  `{std}`")
 
