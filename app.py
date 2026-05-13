@@ -302,70 +302,70 @@ def arm_diagram(elbow, sup, pro, wf, we):
     return fig
 
 def hand_diagram(grip, finger_flex):
-    """Front-view hand showing grip closure and finger flexion."""
-    fig, ax = plt.subplots(figsize=(4, 5), facecolor='#f8fafc')
-    ax.set_facecolor('#f8fafc')
-    ax.set_xlim(-1.5, 1.5); ax.set_ylim(-0.5, 3.2)
-    ax.set_aspect('equal'); ax.axis('off')
-    ax.set_title(f"Grip Closure: {grip}%  |  Finger Flexion: {finger_flex}°",
-                 fontsize=9, fontweight='bold', color='#374151')
-
+    """Front-view hand — grip bar + finger arc dial."""
     grip_col   = score_color(synergy_score(grip, 80, 100))
     finger_col = score_color(synergy_score(finger_flex, 70, 90))
-    closure = grip / 100.0  # 0=open, 1=closed
+    closure    = grip / 100.0
 
-    # Palm
-    palm = patches.FancyBboxPatch((-0.5, 0), 1.0, 0.9,
-        boxstyle="round,pad=0.08", linewidth=2,
-        edgecolor='#475569', facecolor='#cbd5e1')
-    ax.add_patch(palm)
+    fig, axes = plt.subplots(1, 2, figsize=(6, 3.5), facecolor='#f8fafc')
+    fig.suptitle(f"Grip Closure: {grip}%  |  Finger Flexion: {finger_flex}°",
+                 fontsize=9, fontweight='bold', color='#374151')
 
-    # Thumb
-    thumb_angle = np.radians(160 - closure * 80)
-    tx = -0.55 + 0.45*np.cos(thumb_angle)
-    ty = 0.35  + 0.45*np.sin(thumb_angle)
-    ax.plot([-0.55, tx], [0.35, ty], color='#64748b', linewidth=9,
-            solid_capstyle='round')
+    # ── Left: Grip closure bar chart ──
+    ax = axes[0]; ax.set_facecolor('#f8fafc'); ax.axis('off')
+    ax.set_xlim(0, 1); ax.set_ylim(0, 1)
+    ax.set_title("Grip Closure", fontsize=8, color='#64748b')
 
-    # Four fingers
-    finger_x = [-0.35, -0.12, 0.12, 0.35]
-    finger_len = [1.0, 1.15, 1.1, 0.9]
-    for i, (fx, flen) in enumerate(zip(finger_x, finger_len)):
-        # Base phalanx (always up)
-        base_len = flen * 0.4
-        ax.plot([fx, fx], [0.9, 0.9+base_len], color='#64748b',
-                linewidth=8, solid_capstyle='round')
-        # Mid phalanx (flexes with finger_flex)
-        mid_angle = np.radians(90 - finger_flex * 0.6)
-        mx = fx + base_len*0.5*np.cos(mid_angle)
-        my = 0.9 + base_len + base_len*0.5*np.sin(mid_angle)
-        mid_end_x = fx + base_len*0.5*np.cos(mid_angle)
-        mid_end_y = 0.9 + base_len + flen*0.35*np.sin(mid_angle)
-        ax.plot([fx, mid_end_x], [0.9+base_len, mid_end_y],
-                color=finger_col, linewidth=7, solid_capstyle='round')
-        # Tip phalanx (curls more with closure)
-        tip_angle = mid_angle - np.radians(closure * 60)
-        tip_x = mid_end_x + flen*0.25*np.cos(tip_angle)
-        tip_y = mid_end_y + flen*0.25*np.sin(tip_angle)
-        ax.plot([mid_end_x, tip_x], [mid_end_y, tip_y],
-                color=grip_col, linewidth=6, solid_capstyle='round')
+    # Background bar
+    ax.barh(0.5, 1.0, height=0.25, color='#e2e8f0', left=0)
+    # Fill bar
+    ax.barh(0.5, closure, height=0.25, color=grip_col, left=0)
+    # Optimal marker
+    ax.axvline(x=0.80, color='#f97316', linewidth=2, linestyle='--', alpha=0.8)
+    ax.text(0.80, 0.78, 'Opt 80%', ha='center', fontsize=7,
+            color='#f97316', fontweight='bold')
+    ax.text(closure/2, 0.5, f"{grip}%", ha='center', va='center',
+            fontsize=11, fontweight='bold', color='white' if grip > 20 else '#374151')
+    ax.text(0.5, 0.2, "← Open        Closed →", ha='center',
+            fontsize=7, color='#94a3b8')
 
-    # Grip closure bar
-    bar_bg = patches.FancyBboxPatch((-0.9, -0.4), 1.8, 0.18,
-        boxstyle='round,pad=0.03', facecolor='#e2e8f0', edgecolor='none')
-    ax.add_patch(bar_bg)
-    bar_fill = patches.FancyBboxPatch((-0.9, -0.4), 1.8*(grip/100), 0.18,
-        boxstyle='round,pad=0.03', facecolor=grip_col, edgecolor='none')
-    ax.add_patch(bar_fill)
-    ax.text(0, -0.31, f"Grip {grip}%", ha='center', va='center',
-            fontsize=8, fontweight='bold', color='white')
+    # Finger silhouettes (simple rect bars)
+    for i, (fx, fh) in enumerate(zip([0.12,0.32,0.52,0.72,0.88],
+                                      [0.55,0.65,0.63,0.58,0.40])):
+        curl = fh * closure * (finger_flex / 90)
+        bar_h = max(fh - curl * 0.4, 0.05)
+        ax.bar(fx, bar_h, width=0.12, bottom=0.82,
+               color=finger_col, alpha=0.85, linewidth=0)
+    ax.text(0.5, 0.72, "↑ Fingers", ha='center', fontsize=7, color='#94a3b8')
 
-    # Machine optimal indicator
-    opt_x = -0.9 + 1.8*(80/100)
-    ax.annotate('Opt', xy=(opt_x, -0.31), fontsize=7, color='#f97316',
-                ha='center', va='center')
-    ax.plot([opt_x, opt_x], [-0.42, -0.2], color='#f97316',
-            linewidth=1.5, linestyle='--')
+    # ── Right: Finger flexion arc ──
+    ax2 = axes[1]; ax2.set_facecolor('#f8fafc'); ax2.axis('off')
+    ax2.set_xlim(-1.3, 1.3); ax2.set_ylim(-1.3, 1.3)
+    ax2.set_aspect('equal')
+    ax2.set_title("Finger Flexion", fontsize=8, color='#64748b')
+
+    # Background arc (max 90°)
+    t_max = np.linspace(np.radians(90), np.radians(90+90), 60)
+    ax2.fill_between(np.cos(t_max), np.sin(t_max), alpha=0.08, color='#cbd5e1')
+    ax2.plot(np.cos(t_max), np.sin(t_max), color='#e2e8f0', linewidth=6)
+
+    # Optimal arc (70°)
+    t_opt = np.linspace(np.radians(90), np.radians(90+70), 60)
+    ax2.plot(np.cos(t_opt)*0.95, np.sin(t_opt)*0.95,
+             color='#f97316', linewidth=2, linestyle='--')
+
+    # Student arc
+    t_stu = np.linspace(np.radians(90), np.radians(90+finger_flex), 60)
+    ax2.fill_between(np.cos(t_stu)*0.85, np.sin(t_stu)*0.85, alpha=0.25,
+                     color=finger_col)
+    ax2.plot(np.cos(t_stu)*0.85, np.sin(t_stu)*0.85,
+             color=finger_col, linewidth=3)
+
+    ax2.plot([0,0],[0,1], color='#1a1a2e', linewidth=3)
+    ax2.text(0, -1.2, f"{finger_flex}° measured  |  Opt: 70°",
+             ha='center', fontsize=7, color='#64748b')
+    ax2.text(0.25, 0.25, f"{finger_flex}°", fontsize=10,
+             color=finger_col, fontweight='bold')
 
     fig.tight_layout()
     return fig
@@ -848,8 +848,18 @@ st.markdown("Measure your maximum shoulder range across four axes — "
 gc1,gc2=st.columns([1,2])
 with gc1:
     st.markdown("#### 🖼️ Shoulder Anatomy Reference")
-    st.image("https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/Shoulder_joint.svg/480px-Shoulder_joint.svg.png",
-             caption="Glenohumeral joint — 4 axes of rotation", use_container_width=True)
+    st.markdown("""
+    <div style="background:#f1f5f9;border:1px solid #e2e8f0;border-radius:10px;padding:16px;text-align:center;">
+      <div style="font-size:3rem;">🫁</div>
+      <div style="font-weight:700;color:#7c3aed;margin:6px 0 4px;">Glenohumeral Joint</div>
+      <div style="font-size:.78rem;color:#64748b;line-height:1.7;">
+        The shoulder is a <strong>ball-and-socket joint</strong>.<br>
+        The ball (humeral head) rotates inside the socket (glenoid fossa).<br>
+        This allows <strong>4 axes of motion</strong>:<br>
+        Abduction · Flexion · Internal Rotation · External Rotation<br><br>
+        <em>Normal range: 0–180° abduction, 0–90° rotation</em>
+      </div>
+    </div>""", unsafe_allow_html=True)
 with gc2:
     st.markdown("#### 📐 Your Shoulder Arc Diagram")
     st.markdown("Set your sliders below — the diagram updates live.")
@@ -897,8 +907,19 @@ st.markdown("Elbow flexion drives the primary lifting motion. "
 gc1,gc2=st.columns([1,2])
 with gc1:
     st.markdown("#### 🖼️ Elbow & Forearm Reference")
-    st.image("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Arm_bones_--_anterior_labeled.png/300px-Arm_bones_--_anterior_labeled.png",
-             caption="Humerus, radius & ulna — flexion + rotation axes", use_container_width=True)
+    st.markdown("""
+    <div style="background:#f1f5f9;border:1px solid #e2e8f0;border-radius:10px;padding:16px;text-align:center;">
+      <div style="font-size:3rem;">💪</div>
+      <div style="font-weight:700;color:#0891b2;margin:6px 0 4px;">Elbow &amp; Forearm Bones</div>
+      <div style="font-size:.78rem;color:#64748b;line-height:1.7;">
+        <strong>Humerus</strong> (upper arm) connects at the elbow<br>
+        to the <strong>Radius &amp; Ulna</strong> (forearm bones).<br><br>
+        Elbow flexion: <strong>0–145°</strong><br>
+        Supination (palm up): <strong>0–90°</strong><br>
+        Pronation (palm down): <strong>0–90°</strong><br>
+        Wrist flexion/extension: <strong>0–80° / 0–70°</strong>
+      </div>
+    </div>""", unsafe_allow_html=True)
 with gc2:
     st.markdown("#### 💪 Your Arm Motion Diagram")
     c1,c2,c3,c4,c5=st.columns(5)
@@ -955,8 +976,18 @@ st.markdown("Grip closure and finger flexion control the robotic end-effector �
 gc1,gc2=st.columns([1,2])
 with gc1:
     st.markdown("#### 🖼️ Hand Anatomy Reference")
-    st.image("https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/Scheme_human_hand_bones-en.svg/360px-Scheme_human_hand_bones-en.svg.png",
-             caption="Metacarpals & phalanges — grip & flexion axes", use_container_width=True)
+    st.markdown("""
+    <div style="background:#f1f5f9;border:1px solid #e2e8f0;border-radius:10px;padding:16px;text-align:center;">
+      <div style="font-size:3rem;">✋</div>
+      <div style="font-weight:700;color:#059669;margin:6px 0 4px;">Hand Bones</div>
+      <div style="font-size:.78rem;color:#64748b;line-height:1.7;">
+        <strong>Metacarpals</strong> (palm bones) connect to<br>
+        <strong>Proximal → Middle → Distal Phalanges</strong> (finger bones).<br><br>
+        MCP Joint (knuckle) flexion: <strong>0–90°</strong><br>
+        Grip closure (all fingers): <strong>0–100%</strong><br><br>
+        <em>The robotic hand replicates all 3 phalanx segments per finger</em>
+      </div>
+    </div>""", unsafe_allow_html=True)
 with gc2:
     st.markdown("#### ✊ Your Grip Diagram")
     c1,c2=st.columns(2)
