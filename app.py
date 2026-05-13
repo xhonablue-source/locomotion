@@ -91,6 +91,46 @@ div[data-testid="stSidebar"] span,
 div[data-testid="stSidebar"] label,
 div[data-testid="stSidebar"] div { color: #111827 !important; }
 
+/* ── Selectbox / Dropdown fixes ── */
+div[data-baseweb="select"] *,
+div[data-baseweb="select"] div,
+div[data-baseweb="select"] span,
+div[data-baseweb="select"] input,
+[data-testid="stSelectbox"] *,
+[data-testid="stSelectbox"] div,
+[data-testid="stSelectbox"] span {
+  color: #111827 !important;
+  background-color: #ffffff !important;
+}
+/* Dropdown menu list */
+ul[data-testid="stSelectboxVirtualDropdown"],
+ul[data-testid="stSelectboxVirtualDropdown"] li,
+ul[data-testid="stSelectboxVirtualDropdown"] li div,
+ul[data-testid="stSelectboxVirtualDropdown"] li span,
+div[data-baseweb="popover"] *,
+div[data-baseweb="popover"] div,
+div[data-baseweb="popover"] span,
+div[data-baseweb="popover"] li,
+div[role="listbox"],
+div[role="listbox"] *,
+div[role="option"],
+div[role="option"] * {
+  color: #111827 !important;
+  background-color: #ffffff !important;
+}
+/* Hovered option */
+div[role="option"]:hover,
+div[role="option"]:hover * {
+  background-color: #f1f5f9 !important;
+  color: #111827 !important;
+}
+/* Selected option */
+div[aria-selected="true"],
+div[aria-selected="true"] * {
+  background-color: #e0f2fe !important;
+  color: #0369a1 !important;
+}
+
 /* ── Expander — protect icon font, only colour the label text ── */
 [data-testid="stExpander"] summary {
   color: #111827 !important;
